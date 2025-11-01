@@ -1,3 +1,126 @@
+# Job Applications Dashboard
+
+A modern, responsive web application for tracking and managing job applications. Built with React, TypeScript, Material-UI, and Vite.
+
+## Features
+
+- 📊 **Beautiful Dashboard**: Clean, modern interface with gradient background
+- 📱 **Mobile Responsive**: Automatically switches between table view (desktop) and card view (mobile)
+- 🔍 **Search Functionality**: Real-time search across all job fields
+- 🎨 **Material-UI Components**: Professional design with Material-UI
+- 📡 **Backend Integration**: Connects to a Python backend API for job data
+- ✨ **Status Indicators**: Visual chips for job status and home office options
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- Yarn package manager
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   yarn install
+   ```
+
+3. Configure the backend URL (optional):
+   - Copy `.env.example` to `.env`
+   - Update `VITE_BACKEND_URL` with your backend URL
+   - Default: `http://localhost:8000`
+
+### Development
+
+Start the development server:
+```bash
+yarn dev
+```
+
+The application will be available at `http://localhost:5173`
+
+### Building for Production
+
+```bash
+yarn build
+```
+
+### Linting
+
+```bash
+yarn lint
+```
+
+## Backend API
+
+The application expects a backend API with the following endpoint:
+
+### GET `/jobs`
+
+Returns a list of job applications in the following format:
+
+```json
+{
+  "rows": [
+    {
+      "location": "string",
+      "website": "string",
+      "websiteToJobs": "string",
+      "hasJob": true,
+      "name": "string",
+      "salary": "string",
+      "homeOfficeOption": true,
+      "period": "string",
+      "employmentType": "string",
+      "applicationDate": "2025-11-01",
+      "comments": "string"
+    }
+  ]
+}
+```
+
+## Technologies Used
+
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Material-UI (MUI)** - Component library
+- **ESLint** - Code linting
+
+## Project Structure
+
+```
+src/
+├── App.tsx          # Main application component
+├── types.ts         # TypeScript type definitions
+├── main.tsx         # Application entry point
+├── index.css        # Global styles
+└── App.css          # Component styles
+```
+
+## Features in Detail
+
+### Search Functionality
+The search bar filters jobs in real-time across multiple fields:
+- Job name
+- Location
+- Website
+- Salary
+- Employment type
+- Period
+- Comments
+
+### Responsive Design
+- **Desktop (md and above)**: Full table view with all columns
+- **Mobile (below md)**: Card-based layout optimized for small screens
+
+### Status Indicators
+- **Has Job**: Green chip indicating the position is still open
+- **Home Office**: Blue chip indicating remote work availability
+
+---
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
