@@ -47,14 +47,14 @@ function App() {
     const filtered = jobs.filter((job) => {
       const searchLower = searchTerm.toLowerCase();
       return (
-        job.name.toLowerCase().includes(searchLower) ||
+        (job.name?.toLowerCase().includes(searchLower) ?? false) ||
         job.location.toLowerCase().includes(searchLower) ||
         job.website.toLowerCase().includes(searchLower) ||
-        job.salary.toLowerCase().includes(searchLower) ||
-        job.employmentType.toLowerCase().includes(searchLower) ||
-        job.period.toLowerCase().includes(searchLower) ||
-        job.comments.toLowerCase().includes(searchLower) ||
-        job.foundOn.toLowerCase().includes(searchLower)
+        (job.salary?.toLowerCase().includes(searchLower) ?? false) ||
+        (job.employmentType?.toLowerCase().includes(searchLower) ?? false) ||
+        (job.period?.toLowerCase().includes(searchLower) ?? false) ||
+        (job.comments?.toLowerCase().includes(searchLower) ?? false) ||
+        (job.foundOn?.toLowerCase().includes(searchLower) ?? false)
       );
     });
     setFilteredJobs(filtered);
@@ -99,7 +99,7 @@ function App() {
     <Card key={index} sx={{ mb: 2, boxShadow: 2 }}>
       <CardContent>
         <Typography variant="h6" component="div" gutterBottom>
-          {job.name}
+          {job.name || 'N/A'}
         </Typography>
         <Stack spacing={1}>
           <Typography variant="body2" color="text.secondary">
@@ -111,18 +111,26 @@ function App() {
               {job.website}
             </Link>
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Found On:</strong> {job.foundOn}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Salary:</strong> {job.salary}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Employment Type:</strong> {job.employmentType}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Period:</strong> {job.period}
-          </Typography>
+          {job.foundOn && (
+            <Typography variant="body2" color="text.secondary">
+              <strong>Found On:</strong> {job.foundOn}
+            </Typography>
+          )}
+          {job.salary && (
+            <Typography variant="body2" color="text.secondary">
+              <strong>Salary:</strong> {job.salary}
+            </Typography>
+          )}
+          {job.employmentType && (
+            <Typography variant="body2" color="text.secondary">
+              <strong>Employment Type:</strong> {job.employmentType}
+            </Typography>
+          )}
+          {job.period && (
+            <Typography variant="body2" color="text.secondary">
+              <strong>Period:</strong> {job.period}
+            </Typography>
+          )}
           {job.applicationDate && (
             <Typography variant="body2" color="text.secondary">
               <strong>Application Date:</strong> {new Date(job.applicationDate).toLocaleDateString()}
@@ -215,7 +223,7 @@ function App() {
                   }}
                 >
                   <TableCell component="th" scope="row">
-                    {job.name}
+                    {job.name || '-'}
                   </TableCell>
                   <TableCell>{job.location}</TableCell>
                   <TableCell>
@@ -223,10 +231,10 @@ function App() {
                       {job.website}
                     </Link>
                   </TableCell>
-                  <TableCell>{job.foundOn}</TableCell>
-                  <TableCell>{job.salary}</TableCell>
-                  <TableCell>{job.employmentType}</TableCell>
-                  <TableCell>{job.period}</TableCell>
+                  <TableCell>{job.foundOn || '-'}</TableCell>
+                  <TableCell>{job.salary || '-'}</TableCell>
+                  <TableCell>{job.employmentType || '-'}</TableCell>
+                  <TableCell>{job.period || '-'}</TableCell>
                   <TableCell>{job.applicationDate ? new Date(job.applicationDate).toLocaleDateString() : '-'}</TableCell>
                   <TableCell>
                     {job.homeOfficeOption && (
