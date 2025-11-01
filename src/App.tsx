@@ -19,6 +19,7 @@ import {
   Card,
   CardContent,
   Stack,
+  Link,
 } from '@mui/material';
 import type { Job, JobsResponse } from './types';
 import './App.css';
@@ -89,7 +90,10 @@ function App() {
             <strong>Location:</strong> {job.location}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            <strong>Website:</strong> {job.website}
+            <strong>Website:</strong>{' '}
+            <Link href={job.website} target="_blank" rel="noopener noreferrer">
+              {job.website}
+            </Link>
           </Typography>
           <Typography variant="body2" color="text.secondary">
             <strong>Salary:</strong> {job.salary}
@@ -104,9 +108,6 @@ function App() {
             <strong>Application Date:</strong> {new Date(job.applicationDate).toLocaleDateString()}
           </Typography>
           <Box display="flex" gap={1} flexWrap="wrap">
-            {job.hasJob && (
-              <Chip label="Has Job" color="success" size="small" />
-            )}
             {job.homeOfficeOption && (
               <Chip label="Home Office" color="primary" size="small" />
             )}
@@ -175,7 +176,7 @@ function App() {
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Type</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Period</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Date</TableCell>
-                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Status</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Home Office</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Comments</TableCell>
               </TableRow>
             </TableHead>
@@ -193,26 +194,21 @@ function App() {
                   </TableCell>
                   <TableCell>{job.location}</TableCell>
                   <TableCell>
-                    <Typography variant="body2" noWrap sx={{ maxWidth: 150 }}>
+                    <Link href={job.website} target="_blank" rel="noopener noreferrer" sx={{ maxWidth: 150, display: 'inline-block' }}>
                       {job.website}
-                    </Typography>
+                    </Link>
                   </TableCell>
                   <TableCell>{job.salary}</TableCell>
                   <TableCell>{job.employmentType}</TableCell>
                   <TableCell>{job.period}</TableCell>
                   <TableCell>{new Date(job.applicationDate).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Box display="flex" gap={0.5} flexDirection="column">
-                      {job.hasJob && (
-                        <Chip label="Has Job" color="success" size="small" />
-                      )}
-                      {job.homeOfficeOption && (
-                        <Chip label="Home Office" color="primary" size="small" />
-                      )}
-                    </Box>
+                    {job.homeOfficeOption && (
+                      <Chip label="Home Office" color="primary" size="small" />
+                    )}
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2" noWrap sx={{ maxWidth: 200 }}>
+                    <Typography variant="body2">
                       {job.comments || '-'}
                     </Typography>
                   </TableCell>
