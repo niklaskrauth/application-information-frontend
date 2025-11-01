@@ -33,6 +33,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [loadingTime, setLoadingTime] = useState(0);
   
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -52,11 +53,26 @@ function App() {
         job.salary.toLowerCase().includes(searchLower) ||
         job.employmentType.toLowerCase().includes(searchLower) ||
         job.period.toLowerCase().includes(searchLower) ||
-        job.comments.toLowerCase().includes(searchLower)
+        job.comments.toLowerCase().includes(searchLower) ||
+        job.foundOn.toLowerCase().includes(searchLower)
       );
     });
     setFilteredJobs(filtered);
   }, [searchTerm, jobs]);
+
+  useEffect(() => {
+    // Timer for loading state
+    let interval: ReturnType<typeof setInterval> | undefined;
+    if (loading) {
+      setLoadingTime(0);
+      interval = setInterval(() => {
+        setLoadingTime((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [loading]);
 
   const fetchJobs = async () => {
     try {
@@ -96,6 +112,9 @@ function App() {
             </Link>
           </Typography>
           <Typography variant="body2" color="text.secondary">
+            <strong>Found On:</strong> {job.foundOn}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
             <strong>Salary:</strong> {job.salary}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -104,9 +123,11 @@ function App() {
           <Typography variant="body2" color="text.secondary">
             <strong>Period:</strong> {job.period}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Application Date:</strong> {new Date(job.applicationDate).toLocaleDateString()}
-          </Typography>
+          {job.applicationDate && (
+            <Typography variant="body2" color="text.secondary">
+              <strong>Application Date:</strong> {new Date(job.applicationDate).toLocaleDateString()}
+            </Typography>
+          )}
           <Box display="flex" gap={1} flexWrap="wrap">
             {job.homeOfficeOption && (
               <Chip label="Home Office" color="primary" size="small" />
@@ -138,7 +159,7 @@ function App() {
           fullWidth
           variant="outlined"
           label="Search jobs"
-          placeholder="Search by name, location, salary, type, period, or comments..."
+          placeholder="Search by name, location, website, found on, salary, type, period, or comments..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{ mb: 2 }}
@@ -149,8 +170,11 @@ function App() {
       </Paper>
 
       {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" minHeight="400px">
           <CircularProgress size={60} />
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            Loading... {loadingTime}s
+          </Typography>
         </Box>
       ) : error ? (
         <Alert severity="error" sx={{ mb: 3 }}>
@@ -172,6 +196,7 @@ function App() {
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Name</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Location</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Website</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Found On</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Salary</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Type</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Period</TableCell>
@@ -198,10 +223,11 @@ function App() {
                       {job.website}
                     </Link>
                   </TableCell>
+                  <TableCell>{job.foundOn}</TableCell>
                   <TableCell>{job.salary}</TableCell>
                   <TableCell>{job.employmentType}</TableCell>
                   <TableCell>{job.period}</TableCell>
-                  <TableCell>{new Date(job.applicationDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{job.applicationDate ? new Date(job.applicationDate).toLocaleDateString() : '-'}</TableCell>
                   <TableCell>
                     {job.homeOfficeOption && (
                       <Chip label="Home Office" color="primary" size="small" />
