@@ -8,8 +8,9 @@ export interface Job {
   homeOfficeOption: boolean;
   period: string;
   employmentType: string;
-  applicationDate: string;
+  applicationDate: string | null;
   comments: string;
+  foundOn: string;
 }
 
 export interface JobsResponse {
