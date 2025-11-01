@@ -46,6 +46,44 @@ The application will be available at `http://localhost:5173`
 yarn build
 ```
 
+## Docker Deployment
+
+The application can be deployed using Docker for production environments.
+
+### Using Docker
+
+Build and run the Docker image:
+
+```bash
+# Build the Docker image
+docker build -t application-information-frontend .
+
+# Run the container
+docker run -d -p 3000:80 --name job-apps-frontend application-information-frontend
+```
+
+The application will be available at `http://localhost:3000`
+
+### Using Docker Compose
+
+For easier deployment with environment configuration:
+
+```bash
+# Start the application
+docker-compose up -d
+
+# Stop the application
+docker-compose down
+```
+
+Configure the backend URL by creating a `.env` file:
+
+```env
+VITE_BACKEND_URL=http://your-backend-url:8000
+```
+
+The application will be available at `http://localhost:3000`
+
 ### Linting
 
 ```bash
@@ -68,17 +106,20 @@ Returns a list of job applications in the following format:
       "website": "string",
       "websiteToJobs": "string",
       "hasJob": true,
-      "name": "string",
-      "salary": "string",
-      "homeOfficeOption": true,
-      "period": "string",
-      "employmentType": "string",
-      "applicationDate": "2025-11-01",
-      "comments": "string"
+      "name": "string | null",
+      "salary": "string | null",
+      "homeOfficeOption": "boolean | null",
+      "period": "string | null",
+      "employmentType": "string | null",
+      "applicationDate": "string | null",
+      "comments": "string | null",
+      "foundOn": "string | null"
     }
   ]
 }
 ```
+
+**Note:** All fields can be `null` except `hasJob`, `location`, `website`, and `websiteToJobs`.
 
 ## Technologies Used
 
