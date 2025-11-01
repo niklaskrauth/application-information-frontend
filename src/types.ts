@@ -3,14 +3,14 @@ export interface Job {
   website: string;
   websiteToJobs: string;
   hasJob: boolean;
-  name: string;
-  salary: string;
-  homeOfficeOption: boolean;
-  period: string;
-  employmentType: string;
+  name: string | null;
+  salary: string | null;
+  homeOfficeOption: boolean | null;
+  period: string | null;
+  employmentType: string | null;
   applicationDate: string | null;
-  comments: string;
-  foundOn: string;
+  comments: string | null;
+  foundOn: string | null;
 }
 
 export interface JobsResponse {
