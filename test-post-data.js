@@ -65,7 +65,12 @@ fetch(url, {
   },
   body: JSON.stringify(sampleJobsData)
 })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
   .then(data => {
     console.log('Success:', data);
     console.log('\nYou can now view the jobs in the frontend at http://localhost:3000');

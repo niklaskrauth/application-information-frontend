@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 3000;
 
 // Enable CORS for development
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 // Store jobs data in memory
 let jobsData = { rows: [] };
@@ -29,7 +29,17 @@ app.post('/api/jobs', (req, res) => {
     return res.status(400).json({ success: false, message: 'Request body must contain a "rows" array' });
   }
   
-  jobsData = req.body;
+  // Validate that only expected properties are in the root object
+  const allowedRootKeys = ['rows'];
+  const receivedKeys = Object.keys(req.body);
+  const unexpectedKeys = receivedKeys.filter(key => !allowedRootKeys.includes(key));
+  
+  if (unexpectedKeys.length > 0) {
+    console.warn(`Received unexpected keys in request: ${unexpectedKeys.join(', ')}`);
+  }
+  
+  // Store only the validated data structure
+  jobsData = { rows: req.body.rows };
   console.log(`Updated jobs data with ${jobsData.rows.length} jobs`);
   res.json({ success: true, message: 'Jobs data received', count: jobsData.rows.length });
 });
