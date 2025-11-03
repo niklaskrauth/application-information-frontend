@@ -11,6 +11,7 @@ export interface Job {
   applicationDate: string | null;
   comments: string | null;
   foundOn: string | null;
+  occupyStart: string | null;
 }
 
 export interface JobsResponse {

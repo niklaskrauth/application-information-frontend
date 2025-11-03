@@ -113,7 +113,8 @@ Returns a list of job applications in the following format:
       "employmentType": "string | null",
       "applicationDate": "string | null",
       "comments": "string | null",
-      "foundOn": "string | null"
+      "foundOn": "string | null",
+      "occupyStart": "string | null"
     }
   ]
 }
