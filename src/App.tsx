@@ -139,7 +139,7 @@ function App() {
           )}
           {job.occupyStart && (
             <Typography variant="body2" color="text.secondary">
-              <strong>Occupy Start:</strong> {job.occupyStart}
+              <strong>Occupy Start:</strong> {new Date(job.occupyStart).toLocaleDateString()}
             </Typography>
           )}
           <Box display="flex" gap={1} flexWrap="wrap">
@@ -243,7 +243,7 @@ function App() {
                   <TableCell>{job.employmentType || '-'}</TableCell>
                   <TableCell>{job.period || '-'}</TableCell>
                   <TableCell>{job.applicationDate ? new Date(job.applicationDate).toLocaleDateString() : '-'}</TableCell>
-                  <TableCell>{job.occupyStart || '-'}</TableCell>
+                  <TableCell>{job.occupyStart ? new Date(job.occupyStart).toLocaleDateString() : '-'}</TableCell>
                   <TableCell>
                     {job.homeOfficeOption && (
                       <Chip label="Home Office" color="primary" size="small" />
