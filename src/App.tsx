@@ -54,7 +54,8 @@ function App() {
         (job.employmentType?.toLowerCase().includes(searchLower) ?? false) ||
         (job.period?.toLowerCase().includes(searchLower) ?? false) ||
         (job.comments?.toLowerCase().includes(searchLower) ?? false) ||
-        (job.foundOn?.toLowerCase().includes(searchLower) ?? false)
+        (job.foundOn?.toLowerCase().includes(searchLower) ?? false) ||
+        (job.occupyStart?.toLowerCase().includes(searchLower) ?? false)
       );
     });
     setFilteredJobs(filtered);
@@ -136,6 +137,11 @@ function App() {
               <strong>Application Date:</strong> {new Date(job.applicationDate).toLocaleDateString()}
             </Typography>
           )}
+          {job.occupyStart && (
+            <Typography variant="body2" color="text.secondary">
+              <strong>Occupy Start:</strong> {new Date(job.occupyStart).toLocaleDateString()}
+            </Typography>
+          )}
           <Box display="flex" gap={1} flexWrap="wrap">
             {job.homeOfficeOption && (
               <Chip label="Home Office" color="primary" size="small" />
@@ -155,10 +161,10 @@ function App() {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       <Box sx={{ mb: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
-          Job Applications Dashboard
+          🐱 Job Applications Dashboard 🐱
         </Typography>
         <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-          Track and manage your job applications
+          Track and manage your job applications (with cats!)
         </Typography>
       </Box>
 
@@ -167,7 +173,7 @@ function App() {
           fullWidth
           variant="outlined"
           label="Search jobs"
-          placeholder="Search by name, location, website, found on, salary, type, period, or comments..."
+          placeholder="Search by name, location, website, found on, salary, type, period, occupy start, or comments..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           sx={{ mb: 2 }}
@@ -209,6 +215,7 @@ function App() {
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Type</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Period</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Date</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Occupy Start</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Home Office</TableCell>
                 <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Comments</TableCell>
               </TableRow>
@@ -236,6 +243,7 @@ function App() {
                   <TableCell>{job.employmentType || '-'}</TableCell>
                   <TableCell>{job.period || '-'}</TableCell>
                   <TableCell>{job.applicationDate ? new Date(job.applicationDate).toLocaleDateString() : '-'}</TableCell>
+                  <TableCell>{job.occupyStart ? new Date(job.occupyStart).toLocaleDateString() : '-'}</TableCell>
                   <TableCell>
                     {job.homeOfficeOption && (
                       <Chip label="Home Office" color="primary" size="small" />
