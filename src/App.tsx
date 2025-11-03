@@ -24,8 +24,8 @@ import {
 import type { Job, JobsResponse } from './types';
 import './App.css';
 
-// Backend URL - can be configured via environment variable
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8000';
+// API URL - points to the local Express server that receives data from backend
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 function App() {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -79,7 +79,7 @@ function App() {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch(`${BACKEND_URL}/jobs`);
+      const response = await fetch(`${API_URL}/jobs`);
       
       if (!response.ok) {
         throw new Error(`Failed to fetch jobs: ${response.status} ${response.statusText}`);
