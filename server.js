@@ -19,9 +19,19 @@ let jobsData = { rows: [] };
 // POST endpoint to receive jobs data from backend
 app.post('/api/jobs', (req, res) => {
   console.log('Received POST request with jobs data');
+  
+  // Validate request body
+  if (!req.body || typeof req.body !== 'object') {
+    return res.status(400).json({ success: false, message: 'Invalid request body' });
+  }
+  
+  if (!Array.isArray(req.body.rows)) {
+    return res.status(400).json({ success: false, message: 'Request body must contain a "rows" array' });
+  }
+  
   jobsData = req.body;
-  console.log(`Updated jobs data with ${jobsData.rows?.length || 0} jobs`);
-  res.json({ success: true, message: 'Jobs data received', count: jobsData.rows?.length || 0 });
+  console.log(`Updated jobs data with ${jobsData.rows.length} jobs`);
+  res.json({ success: true, message: 'Jobs data received', count: jobsData.rows.length });
 });
 
 // GET endpoint to retrieve current jobs data
@@ -43,4 +53,3 @@ app.listen(PORT, () => {
   console.log(`POST jobs to http://localhost:${PORT}/api/jobs`);
   console.log(`Frontend available at http://localhost:${PORT}`);
 });
-

@@ -1,5 +1,6 @@
 // Test script to simulate backend posting job data to the frontend
 // Usage: node test-post-data.js
+// Note: Requires Node.js 18+ (includes built-in fetch API)
 
 const sampleJobsData = {
   rows: [
