@@ -26,10 +26,10 @@ A modern, responsive web application for tracking and managing job applications.
    yarn install
    ```
 
-3. Configure the backend URL (optional):
+3. Configure the API URL (optional):
    - Copy `.env.example` to `.env`
-   - Update `VITE_BACKEND_URL` with your backend URL
-   - Default: `http://localhost:8000`
+   - Update `VITE_API_URL` if needed
+   - Default: `/api` (works when using the Express server)
 
 ### Development
 
@@ -40,11 +40,29 @@ yarn dev
 
 The application will be available at `http://localhost:5173`
 
-### Building for Production
+**Note:** In development mode, the frontend uses Vite's dev server. To test the POST endpoint, you need to:
+1. Build the application: `yarn build`
+2. Start the Express server: `yarn start`
+3. Access the application at `http://localhost:3000`
+
+### Production
+
+For production, build the application and start the Express server:
 
 ```bash
+# Build the React application
 yarn build
+
+# Start the Express server
+yarn start
 ```
+
+The Express server will:
+- Serve the built React application
+- Accept POST requests from the backend at `/api/jobs`
+- Provide job data to the frontend via `/api/jobs`
+
+The application will be available at `http://localhost:3000`
 
 ## Docker Deployment
 
@@ -92,12 +110,26 @@ yarn lint
 
 ## Backend API
 
-The application expects a backend API with the following endpoint:
+The application now includes an Express server that acts as a middleware between the backend data source and the React frontend. This allows the backend to push job data to the frontend.
 
-### GET `/jobs`
+### Architecture
 
-Returns a list of job applications in the following format:
+1. **Express Server** (`server.js`): 
+   - Serves the React application
+   - Provides API endpoints for job data
+   - Stores job data in memory
 
+2. **React Frontend**: 
+   - Fetches job data from the Express server
+   - Displays jobs in a responsive table/card layout
+
+### API Endpoints
+
+#### POST `/api/jobs`
+
+The backend should POST job data to this endpoint. The data will be stored in memory and made available to the frontend.
+
+**Request Body:**
 ```json
 {
   "rows": [
@@ -118,6 +150,42 @@ Returns a list of job applications in the following format:
     }
   ]
 }
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Jobs data received",
+  "count": 3
+}
+```
+
+#### GET `/api/jobs`
+
+Retrieves the current job data stored in the server (used by the frontend).
+
+**Response:**
+```json
+{
+  "rows": [...]
+}
+```
+
+### Testing the POST Endpoint
+
+You can test posting data using the included test script:
+
+```bash
+node test-post-data.js
+```
+
+Or using curl:
+
+```bash
+curl -X POST http://localhost:3000/api/jobs \
+  -H "Content-Type: application/json" \
+  -d '{"rows":[...]}'
 ```
 
 **Note:** All fields can be `null` except `hasJob`, `location`, `website`, and `websiteToJobs`.
