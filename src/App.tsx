@@ -52,7 +52,7 @@ function App() {
       
       // Check if response is JSON before parsing
       const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+      if (!contentType || !contentType.toLowerCase().includes('application/json')) {
         throw new Error('Server returned non-JSON response');
       }
       
