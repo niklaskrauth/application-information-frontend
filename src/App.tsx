@@ -34,7 +34,6 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loadingTime, setLoadingTime] = useState(0);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -60,10 +59,6 @@ function App() {
       const data: JobsResponse = await response.json();
       setJobs(data.rows);
       setFilteredJobs(data.rows);
-      
-      if (isInitialLoad) {
-        setIsInitialLoad(false);
-      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while fetching jobs');
       console.error('Error fetching jobs:', err);
@@ -72,7 +67,7 @@ function App() {
         setLoading(false);
       }
     }
-  }, [isInitialLoad]);
+  }, []);
 
   useEffect(() => {
     // Fetch jobs immediately on mount
