@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Box,
   Container,
@@ -34,13 +34,58 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [loadingTime, setLoadingTime] = useState(0);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
+  const fetchJobs = useCallback(async (showLoading = false) => {
+    try {
+      if (showLoading) {
+        setLoading(true);
+      }
+      setError(null);
+      const response = await fetch(`${API_URL}/jobs`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch jobs: ${response.status} ${response.statusText}`);
+      }
+      
+      // Check if response is JSON before parsing
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Server returned non-JSON response');
+      }
+      
+      const data: JobsResponse = await response.json();
+      setJobs(data.rows);
+      setFilteredJobs(data.rows);
+      
+      if (isInitialLoad) {
+        setIsInitialLoad(false);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred while fetching jobs');
+      console.error('Error fetching jobs:', err);
+    } finally {
+      if (showLoading) {
+        setLoading(false);
+      }
+    }
+  }, [isInitialLoad]);
+
   useEffect(() => {
-    fetchJobs();
-  }, []);
+    // Fetch jobs immediately on mount
+    fetchJobs(true);
+    
+    // Poll for new data every 5 seconds
+    const pollInterval = setInterval(() => {
+      fetchJobs(false);
+    }, 5000);
+    
+    // Clean up interval on unmount
+    return () => clearInterval(pollInterval);
+  }, [fetchJobs]);
 
   useEffect(() => {
     // Filter jobs based on search term
@@ -74,27 +119,6 @@ function App() {
       if (interval) clearInterval(interval);
     };
   }, [loading]);
-
-  const fetchJobs = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await fetch(`${API_URL}/jobs`);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch jobs: ${response.status} ${response.statusText}`);
-      }
-      
-      const data: JobsResponse = await response.json();
-      setJobs(data.rows);
-      setFilteredJobs(data.rows);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred while fetching jobs');
-      console.error('Error fetching jobs:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const renderMobileCard = (job: Job, index: number) => (
     <Card key={index} sx={{ mb: 2, boxShadow: 2 }}>
