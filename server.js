@@ -55,7 +55,10 @@ app.use(express.static(path.join(__dirname, 'dist')));
 
 // Handle client-side routing - send index.html for all other routes
 app.use((req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  // Only send index.html if no response has been sent yet
+  if (!res.headersSent) {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  }
 });
 
 app.listen(PORT, () => {
