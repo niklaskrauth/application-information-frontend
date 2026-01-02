@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   Box,
   Button,
@@ -21,6 +21,7 @@ function Upload({ onUploadSuccess }: UploadProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -65,10 +66,9 @@ function Upload({ onUploadSuccess }: UploadProps) {
       setSuccess(`Successfully uploaded ${data.count} jobs`);
       setSelectedFile(null);
       
-      // Reset file input
-      const fileInput = document.getElementById('json-file-input') as HTMLInputElement;
-      if (fileInput) {
-        fileInput.value = '';
+      // Reset file input using ref
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
       }
       
       // Notify parent component to refresh data
@@ -98,6 +98,7 @@ function Upload({ onUploadSuccess }: UploadProps) {
             id="json-file-input"
             type="file"
             onChange={handleFileChange}
+            ref={fileInputRef}
           />
           <label htmlFor="json-file-input">
             <Button

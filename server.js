@@ -74,12 +74,16 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
     
     // Validate that it has the expected structure
     if (!uploadedData || typeof uploadedData !== 'object') {
-      fs.unlinkSync(JOBS_FILE_PATH); // Remove invalid file
+      if (fs.existsSync(JOBS_FILE_PATH)) {
+        fs.unlinkSync(JOBS_FILE_PATH); // Remove invalid file
+      }
       return res.status(400).json({ success: false, message: 'Invalid JSON structure' });
     }
     
     if (!Array.isArray(uploadedData.rows)) {
-      fs.unlinkSync(JOBS_FILE_PATH); // Remove invalid file
+      if (fs.existsSync(JOBS_FILE_PATH)) {
+        fs.unlinkSync(JOBS_FILE_PATH); // Remove invalid file
+      }
       return res.status(400).json({ success: false, message: 'JSON must contain a "rows" array' });
     }
     
