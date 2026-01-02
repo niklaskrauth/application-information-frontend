@@ -9,7 +9,9 @@ A modern, responsive web application for tracking and managing job applications.
 - 🔍 **Search Functionality**: Real-time search across all job fields
 - 🎨 **Material-UI Components**: Professional design with Material-UI
 - 📡 **Backend Integration**: Connects to a Python backend API for job data
+- 📤 **File Upload**: Upload JSON files to share job data with everyone
 - ✨ **Status Indicators**: Visual chips for job status and home office options
+- 💾 **Persistent Storage**: Jobs data is stored in files, surviving server restarts
 
 ## Getting Started
 
@@ -117,17 +119,45 @@ The application now includes an Express server that acts as a middleware between
 1. **Express Server** (`server.js`): 
    - Serves the React application
    - Provides API endpoints for job data
-   - Stores job data in memory
+   - Stores job data persistently in files (survives server restarts)
+   - Supports both file upload and backend POST methods
 
 2. **React Frontend**: 
    - Fetches job data from the Express server
    - Displays jobs in a responsive table/card layout
+   - Provides a file upload interface for sharing job data
 
 ### API Endpoints
 
+#### POST `/api/upload`
+
+Upload a JSON file containing job data. The file is stored on the server and made available to all users.
+
+**Request:**
+- Method: `POST`
+- Content-Type: `multipart/form-data`
+- Body: Form data with a file field named `file`
+- File type: JSON (`.json` extension)
+- Max file size: 10MB
+
+**Example using curl:**
+```bash
+curl -X POST http://localhost:3000/api/upload \
+  -F "file=@jobs.json"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "File uploaded successfully",
+  "count": 3
+}
+```
+
 #### POST `/api/jobs`
 
-The backend should POST job data to this endpoint. The data will be stored in memory and made available to the frontend.
+The backend can POST job data to this endpoint. The data will be stored in a file and made available to the frontend.
 
 **Request Body:**
 ```json
@@ -163,7 +193,7 @@ The backend should POST job data to this endpoint. The data will be stored in me
 
 #### GET `/api/jobs`
 
-Retrieves the current job data stored in the server (used by the frontend).
+Retrieves the current job data stored in the server (used by the frontend). Returns data from the uploaded file or the last POST request.
 
 **Response:**
 ```json
@@ -171,6 +201,19 @@ Retrieves the current job data stored in the server (used by the frontend).
   "rows": [...]
 }
 ```
+
+### Using the File Upload Feature
+
+The frontend includes a built-in upload interface:
+
+1. Start the server: `yarn start` or `node server.js`
+2. Open the application: `http://localhost:3000`
+3. Click on "📤 Upload Jobs Data" to expand the upload section
+4. Click "Select JSON File" and choose your JSON file
+5. Click "Upload" to upload the file
+6. The jobs will immediately appear in the dashboard
+
+The uploaded file is stored in the `data/` directory and persists across server restarts.
 
 ### Testing the POST Endpoint
 

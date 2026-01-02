@@ -20,8 +20,13 @@ import {
   CardContent,
   Stack,
   Link,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import type { Job, JobsResponse } from './types';
+import Upload from './Upload';
 import './App.css';
 
 // API URL - points to the local Express server that receives data from backend
@@ -186,6 +191,20 @@ function App() {
           Track and manage your job applications (with cats!)
         </Typography>
       </Box>
+
+      {/* Upload section - collapsible */}
+      <Accordion sx={{ mb: 3 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="upload-content"
+          id="upload-header"
+        >
+          <Typography variant="h6">📤 Upload Jobs Data</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Upload onUploadSuccess={() => fetchJobs(true)} />
+        </AccordionDetails>
+      </Accordion>
 
       <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
         <TextField

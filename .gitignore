@@ -33,3 +33,6 @@ mock-server.js
 
 # Package manager lock files (using yarn.lock)
 package-lock.json
+
+# Data directory (uploaded jobs)
+data/
