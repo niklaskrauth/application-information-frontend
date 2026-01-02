@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import fs from 'fs';
+import rateLimit from 'express-rate-limit';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,6 +15,32 @@ const PORT = process.env.PORT || 3000;
 // Enable CORS for development
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+
+// Rate limiting for upload endpoint - max 10 uploads per 15 minutes per IP
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs
+  message: 'Too many file uploads from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting for POST jobs endpoint - max 60 requests per 15 minutes per IP
+const postJobsLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 60, // Limit each IP to 60 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiting for GET jobs endpoint - max 100 requests per minute per IP
+const getJobsLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Create data directory if it doesn't exist
 const dataDir = path.join(__dirname, 'data');
@@ -60,7 +87,7 @@ if (fs.existsSync(JOBS_FILE_PATH)) {
 }
 
 // POST endpoint to upload JSON file
-app.post('/api/upload', upload.single('file'), (req, res) => {
+app.post('/api/upload', uploadLimiter, upload.single('file'), (req, res) => {
   console.log('Received file upload request');
   
   if (!req.file) {
@@ -110,7 +137,7 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
 });
 
 // POST endpoint to receive jobs data from backend (legacy support)
-app.post('/api/jobs', (req, res) => {
+app.post('/api/jobs', postJobsLimiter, (req, res) => {
   console.log('Received POST request with jobs data');
   
   // Validate request body
@@ -145,7 +172,7 @@ app.post('/api/jobs', (req, res) => {
 });
 
 // GET endpoint to retrieve current jobs data
-app.get('/api/jobs', (req, res) => {
+app.get('/api/jobs', getJobsLimiter, (req, res) => {
   console.log('Sending jobs data to frontend');
   
   // Try to read from file first, fall back to in-memory data
